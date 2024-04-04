@@ -47,107 +47,109 @@ class _UpdatescreenState extends State<Updatescreen> {
       body: backroundwidget(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Column(children: [
-            SizedBox(
-              height: 60,
-            ),
-            Text(
-              'Update profile',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 6),
-              color: Colors.white,
-              child: InkWell(
-                onTap: () {
-                  imagepick();
-                },
-                child: Row(children: [
-                  Container(
-                    margin: EdgeInsets.zero,
-                    padding: EdgeInsets.all(20),
-                    child: Text('photo'),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      image?.name ?? '',
-                      maxLines: 1,
-                      style: TextStyle(overflow: TextOverflow.ellipsis),
-                    ),
-                  )
-                ]),
+          child: SingleChildScrollView(
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              SizedBox(
+                height: 60,
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            TextFormField(
-              controller: email,
-              decoration: const InputDecoration(
-                hintText: 'email',
+              Text(
+                'Update profile',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            TextFormField(
-              controller: firstname,
-              decoration: const InputDecoration(
-                hintText: 'first name',
+              SizedBox(
+                height: 10,
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            TextFormField(
-              controller: lastname,
-              decoration: const InputDecoration(
-                hintText: 'last name',
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            TextFormField(
-              controller: mobile,
-              decoration: const InputDecoration(
-                hintText: 'mobile',
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            TextFormField(
-              controller: password,
-              decoration: const InputDecoration(
-                hintText: 'password',
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: Visibility(
-                visible: Updatebool == false,
-                replacement: Center(child: CircularProgressIndicator()),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    await Updateapi();
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 6),
+                color: Colors.white,
+                child: InkWell(
+                  onTap: () {
+                    imagepick();
                   },
-                  child: Icon(
-                    Icons.arrow_circle_right_outlined,
+                  child: Row(children: [
+                    Container(
+                      margin: EdgeInsets.zero,
+                      padding: EdgeInsets.all(20),
+                      child: Text('photo'),
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        image?.name ?? '',
+                        maxLines: 1,
+                        style: TextStyle(overflow: TextOverflow.ellipsis),
+                      ),
+                    )
+                  ]),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                controller: email,
+                decoration: const InputDecoration(
+                  hintText: 'email',
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                controller: firstname,
+                decoration: const InputDecoration(
+                  hintText: 'first name',
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                controller: lastname,
+                decoration: const InputDecoration(
+                  hintText: 'last name',
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                controller: mobile,
+                decoration: const InputDecoration(
+                  hintText: 'mobile',
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                controller: password,
+                decoration: const InputDecoration(
+                  hintText: 'password',
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: Visibility(
+                  visible: Updatebool == false,
+                  replacement: Center(child: CircularProgressIndicator()),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await Updateapi();
+                    },
+                    child: Icon(
+                      Icons.arrow_circle_right_outlined,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ]),
+            ]),
+          ),
         ),
       ),
     );

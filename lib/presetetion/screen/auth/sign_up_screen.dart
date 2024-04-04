@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:taks_app/presetetion/data/models/responsobject.dart';
-import 'package:taks_app/presetetion/data/servises/networkcaller.dart';
-import 'package:taks_app/presetetion/data/utils/urls.dart';
+import 'package:get/get.dart';
+import 'package:taks_app/presetetion/data/controlers/sign_up_controler.dart';
+
 import 'package:taks_app/presetetion/util/appcolor.dart';
 import 'package:taks_app/presetetion/widget/bacround_widget.dart';
 import 'package:taks_app/presetetion/widget/snakbar.dart';
 
-class Sing_Up_Screen extends StatefulWidget {
+class Sing_Up_Screen extends StatelessWidget {
   Sing_Up_Screen({super.key});
 
-  @override
-  State<Sing_Up_Screen> createState() => _Sing_Up_ScreenState();
-}
+//   @override
+//   State<Sing_Up_Screen> createState() => _Sing_Up_ScreenState();
+// }
 
-class _Sing_Up_ScreenState extends State<Sing_Up_Screen> {
+// class _Sing_Up_ScreenState extends State<Sing_Up_Screen> {
   TextEditingController _email = TextEditingController();
 
   TextEditingController _firstname = TextEditingController();
@@ -26,8 +26,7 @@ class _Sing_Up_ScreenState extends State<Sing_Up_Screen> {
 
   GlobalKey<FormState> _fromkey = GlobalKey<FormState>();
 
-  bool registrationprogess = false;
-
+  SignUpControler _signUpControler = Get.find<SignUpControler>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,16 +123,18 @@ class _Sing_Up_ScreenState extends State<Sing_Up_Screen> {
                 SizedBox(
                   height: 20,
                 ),
-                Visibility(
-                  visible: registrationprogess == false,
-                  replacement: Center(child: CircularProgressIndicator()),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () => _singup(context),
-                        child: Icon(Icons.arrow_circle_right_outlined)),
-                  ),
-                ),
+                GetBuilder<SignUpControler>(builder: (_) {
+                  return Visibility(
+                    visible: _signUpControler.inProgress == false,
+                    replacement: Center(child: CircularProgressIndicator()),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                          onPressed: () => _singup(context),
+                          child: Icon(Icons.arrow_circle_right_outlined)),
+                    ),
+                  );
+                }),
                 SizedBox(
                   height: 10,
                 ),
@@ -165,21 +166,14 @@ class _Sing_Up_ScreenState extends State<Sing_Up_Screen> {
 
   Future<void> _singup(context) async {
     if (_fromkey.currentState!.validate()) {
-      registrationprogess = true;
-      setState(() {});
+      final result = _signUpControler.signUp(
+          _email.text.trim(),
+          _password.text.trim(),
+          _lastname.text.trim(),
+          _firstname.text.trim(),
+          _mobile.text.trim());
 
-      Map<String, dynamic> inputparams = {
-        "email": _email.text.trim(),
-        "firstName": _firstname.text.trim(),
-        "lastName": _lastname.text.trim(),
-        "mobile": _mobile.text.trim(),
-        "password": _password.text,
-      };
-      final ResponsObject respons =
-          await NetworkCaller.postRequist(Urls.registration, inputparams);
-      registrationprogess = false;
-      setState(() {});
-      if (respons.issucsees) {
+      if (result == true) {
         sncakbarmameg(context, 'registretion is complete');
         Navigator.pop(context);
       } else {

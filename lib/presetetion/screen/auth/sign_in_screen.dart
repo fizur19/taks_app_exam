@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:taks_app/presetetion/data/controlers/auth_controlers.dart';
-import 'package:taks_app/presetetion/data/models/login_respons.dart';
-import 'package:taks_app/presetetion/data/models/responsobject.dart';
-import 'package:taks_app/presetetion/data/servises/networkcaller.dart';
-import 'package:taks_app/presetetion/data/utils/urls.dart';
+import 'package:get/get.dart';
+import 'package:taks_app/presetetion/data/controlers/sign_in_controler.dart';
+
 import 'package:taks_app/presetetion/screen/auth/email.dart';
 import 'package:taks_app/presetetion/screen/main_screen.dart';
 import 'package:taks_app/presetetion/screen/auth/sign_up_screen.dart';
@@ -21,7 +19,7 @@ class _sign_in_screenState extends State<sign_in_screen> {
   TextEditingController _emailTEDcontroller = TextEditingController();
   TextEditingController _passwordTEDcontroller = TextEditingController();
   GlobalKey<FormState> _fromkey = GlobalKey<FormState>();
-  bool singinprocess = false;
+  SignInControler _signInControler = Get.find<SignInControler>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,20 +69,22 @@ class _sign_in_screenState extends State<sign_in_screen> {
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: Visibility(
-                      visible: singinprocess == false,
-                      replacement: Center(child: CircularProgressIndicator()),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (_fromkey.currentState!.validate()) {
-                            singin();
-                          }
-                        },
-                        child: Icon(
-                          Icons.arrow_circle_right_outlined,
+                    child: GetBuilder<SignInControler>(builder: (_) {
+                      return Visibility(
+                        visible: _signInControler.inProgress == false,
+                        replacement: Center(child: CircularProgressIndicator()),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_fromkey.currentState!.validate()) {
+                              singin();
+                            }
+                          },
+                          child: Icon(
+                            Icons.arrow_circle_right_outlined,
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    }),
                   ),
                   SizedBox(
                     height: 100,
@@ -137,24 +137,10 @@ class _sign_in_screenState extends State<sign_in_screen> {
   }
 
   Future<void> singin() async {
-    singinprocess = true;
-    setState(() {});
-    Map<String, dynamic> inputparams = {
-      "email": _emailTEDcontroller.text.trim(),
-      "password": _passwordTEDcontroller.text
-    };
-    final ResponsObject respons = await NetworkCaller.postRequist(
-        Urls.login, inputparams,
-        fromSignIn: true);
-    singinprocess = false;
-    setState(() {});
-    if (respons.issucsees) {
-      if (!mounted) {
-        return;
-      }
-      LoginRespons loginRespons = LoginRespons.fromJson(respons.responsbody);
-      await AuthControler.saveUserdata(loginRespons.data!);
-      await AuthControler.saveusertoken(loginRespons.token!);
+    final result = await _signInControler.signIn(
+        _emailTEDcontroller.text, _passwordTEDcontroller.text);
+
+    if (result) {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
             context,
@@ -166,7 +152,8 @@ class _sign_in_screenState extends State<sign_in_screen> {
       }
     } else {
       if (mounted) {
-        sncakbarmameg(context, respons.errormsg ?? 'login faild try again');
+        sncakbarmameg(
+            context, _signInControler.errormsg ?? 'login faild try again');
       }
     }
   }
